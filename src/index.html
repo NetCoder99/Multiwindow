@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- <base href="./../node_modules" target="_blank"> -->
+  <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+  <link rel="stylesheet" href="./main.css" />
+  <link rel="stylesheet" href="./../node_modules/bootstrap/dist/css/bootstrap.min.css" />
+  <script src='./../node_modules/bootstrap/dist/js/bootstrap.min.js'></script>
+  <script src='./../node_modules/jquery/dist/jquery.min.js'></script>
+  <title>Multiple Window Demo</title>
+</head>
+
+<body>
+
+  <div class="d-flex justify-content-between mb-3">
+    <div class="p-2">
+      <button type="button" class="btn btn-outline-secondary text-dark fw-bold m-1">Checkin</button>
+      <button type="button" class="btn btn-outline-secondary text-dark fw-bold m-1">Students</button>
+      <button type="button" class="btn btn-outline-secondary text-dark fw-bold m-1">Attendance</button>
+    </div>
+    <div class="p-2">
+    </div>
+    <div class="p-2">
+      <button type="button" class="btn btn-outline-secondary text-dark fw-bold">Settings</button>
+      <button type="button" class="btn btn-outline-secondary text-dark fw-bold">Quit</button>
+    </div>
+  </div>
+  </div>
+
+  <h1>Hello World!</h1>
+  We are using Node.js <span id="node-version"></span>,
+  Chromium <span id="chrome-version"></span>,
+  and Electron <span id="electron-version"></span>.
+</body>
+
+</html>

@@ -1,0 +1,81 @@
+const { app, BaseWindow, WebContentsView, BrowserWindow,ipcMain } = require('electron')
+const path    = require('node:path')  
+const appRoot = require('app-root-path');
+
+//const {createCheckinsTable}    = require(appRoot + '/src/data/checkin_procs.js');
+//const {createStudentsTable}    = require(appRoot + '/src/data/students_procs.js');
+
+const {createNavbarWindow}     = require(appRoot + '/src/common/navigation/navbar_window') ;
+const {createCheckinWindow}    = require(appRoot + '/src/pages/checkin/checkin_window.js') ;
+const {createStudentsWindow}   = require(appRoot + '/src/pages/students/students_window.js') ;
+const {createAttendanceWindow} = require(appRoot + '/src/pages/attendance/attendance_window.js') ;
+
+app.whenReady().then(() => {
+  //createCheckinsTable();
+  //createStudentsTable();
+  const winBase = new BaseWindow({x: 100, y:100, width: 1280, height: 1024})
+
+  // ----------------------------------------------------------------------
+  const navTopView     = createNavbarWindow();
+  const checkinView    = createCheckinWindow();
+  const studentsView   = createStudentsWindow();
+  const attendanceView = createAttendanceWindow(true);
+
+  winBase.contentView.addChildView(navTopView);
+  winBase.contentView.addChildView(checkinView);
+  winBase.contentView.addChildView(studentsView);
+  winBase.contentView.addChildView(attendanceView);
+
+  const { width, height } = winBase.getBounds();
+  nav_bounds   = {x: 0,  y: 0,   width: width - 15, height: height - 15}
+  child_bounds = {x: 10, y: 110, width: width - 45, height: height - 15}
+  navTopView.setBounds(nav_bounds);
+  checkinView.setBounds(child_bounds);
+  studentsView.setBounds(child_bounds);
+  attendanceView.setBounds(child_bounds);
+  
+  switchToSelectedPage('attendance');
+
+  // ----------------------------------------------------------------------
+  winBase.on('resize', () => {
+    const { width, height } = winBase.getBounds();
+    nav_bounds   = {x: 0,  y: 0,   width: width - 15, height: height - 15}
+    child_bounds = {x: 10, y: 110, width: width - 45, height: height - 15}
+    navTopView.setBounds(nav_bounds);
+    checkinView.setBounds(child_bounds);
+    studentsView.setBounds(child_bounds);
+    attendanceView.setBounds(child_bounds);
+  });
+
+
+  // ----------------------------------------------------------------------
+  ipcMain.on('quitButtonClicked', () => {
+    console.log(`quitButtonClicked was invoked at app level`);
+    app.quit();
+  });
+
+  // ----------------------------------------------------------------------
+  ipcMain.on('pageButtonClicked', (event, buttonName) => {
+    console.log(`pageButtonClicked was invoked at app level for: ${buttonName}`);
+    switchToSelectedPage(buttonName);
+  });
+
+  // ----------------------------------------------------------------------
+  function switchToSelectedPage(buttonName) {
+    const buttonNameLower = String(buttonName).toLocaleLowerCase();
+    if (buttonNameLower.includes("attendance")) {
+      studentsView.setVisible(false);
+      checkinView.setVisible(false);
+      attendanceView.setVisible(true);
+    } else if (buttonNameLower.includes("student")) {
+      studentsView.setVisible(true);
+      checkinView.setVisible(false);
+      attendanceView.setVisible(false);
+    } else {
+      studentsView.setVisible(false);
+      checkinView.setVisible(true);
+      attendanceView.setVisible(false);
+    }
+  }
+
+});

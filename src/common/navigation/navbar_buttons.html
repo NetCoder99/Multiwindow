@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- <base href="./../node_modules" target="_blank"> -->
+  <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+  <link rel="stylesheet" href="../../main.css" />
+  <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap.min.css" />
+  <script src='../../../node_modules/bootstrap/dist/js/bootstrap.min.js'></script>
+  <script src='../../../node_modules/jquery/dist/jquery.min.js'></script>
+  <title>Multiple Window Demo</title>
+</head>
+
+<body>
+<div class="d-flex justify-content-between mb-3 me-3">
+  <div class="p-2 mt-3">
+    <button id="btnCheckin"    type="button" class="btn btn-outline-secondary text-dark fw-bold m-1">Checkin</button>
+    <button id="btnStudents"   type="button" class="btn btn-outline-secondary text-dark fw-bold m-1">Students</button>
+    <button id="btnAttendance" type="button" class="btn btn-outline-secondary text-dark fw-bold m-1">Attendance</button>
+  </div>
+  <div class="p-2">
+    <div class="text-center">
+      <img src="../../images/rising-sun-martial-arts-logo.png" class="mx-auto">
+    </div>    
+  </div>
+  <div class="p-2 mt-3">
+    <button id="btnSettings" type="button" class="btn btn-outline-secondary text-dark fw-bold">Settings</button>
+    <button id="btnQuit"     type="button" class="btn btn-outline-secondary text-dark fw-bold">Quit</button>
+  </div>
+</div>
+<script src="navbar_renderer.js"></script>
+</body>
+
+</html>

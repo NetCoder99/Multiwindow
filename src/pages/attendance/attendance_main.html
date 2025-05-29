@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Checkin Main Page</title>
+  <link rel="stylesheet" href="../../main.css" />
+  <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap.min.css" />
+  <script src='../../../node_modules/bootstrap/dist/js/bootstrap.js'></script>
+  <script src='../../../node_modules/jquery/dist/jquery.min.js'></script>
+</head>
+
+<body>
+  <div class="text-center">
+    <h1>Attendence Main</h1>
+  </div>
+  <div>
+    <button id="fetchButton" class="btn btn-success btn-sm ml-3" type="button">Fetch</button>
+    <table id="attendanceTable" class="table">
+      <thead>
+          <tr>
+              <th>Attendance Id</th>
+              <th>Badge Number</th>
+              <th>CheckIn Date</th>
+              <th>CheckIn Time</th>
+              <th>Student Name</th>
+          </tr>
+      </thead>
+  </table>
+
+  </div>
+
+  <script src="attendance_renderer.js"></script>
+</body>
+
+</html>

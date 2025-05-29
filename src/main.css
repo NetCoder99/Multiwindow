@@ -1,0 +1,15 @@
+.display_inline_block {
+  display: inline-block;
+}
+
+input:invalid {
+  border: 2px solid red;
+}
+
+input:valid {
+  border: 2px solid green;
+}
+
+.main_form {
+  background-color: #f2ffe6;
+}
