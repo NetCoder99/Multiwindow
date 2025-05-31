@@ -5,12 +5,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
 const information = document.getElementById('info')
 information.innerText = `This app is using Chrome (v${window.versions.chrome()}), Node.js (v${window.versions.node()}), and Electron (v${window.versions.electron()})`
 
-const menuClickedMessage = document.getElementById('menuClickedMessage')
-window.electronAPI.asyncMessage((value) => {
-  console.log(`asyncMessage was activated: ${JSON.stringify(value)}`)
-  menuClickedMessage.innerHTML = JSON.stringify(value)
-})
+// const menuClickedMessage = document.getElementById('menuClickedMessage')
+// window.electronAPI.asyncMessage((value) => {
+//   console.log(`asyncMessage was activated: ${JSON.stringify(value)}`)
+//   menuClickedMessage.innerHTML = JSON.stringify(value)
+// })
 
+//-------------------------------------------------------------------
+// Trap the enter key on the badge number field
+//-------------------------------------------------------------------
 badgeNumber = document.getElementById('badgeNumber')
 badgeNumber.addEventListener('keypress', (event) => {
   console.log(`keypress was detected: `)
@@ -23,7 +26,6 @@ badgeNumber.addEventListener('keypress', (event) => {
 function resetBadgeNumber(inpValue) {
   console.log(`resetBadgeNumber: ${inpValue}`)
   badgeNumber.value = inpValue
-//  console.log(`Hello, ${name}!`);
 }
 
 //-------------------------------------------------------------------
@@ -61,14 +63,20 @@ window.electronAPI.searchByBadgeResult((result) => {
       document.getElementById('badgeNumber_error').classList.remove("text-danger");
       document.getElementById('badgeNumber_error').classList.add("text-success");
       document.getElementById('badgeNumber').value = result.badgeNumber;
+
       document.getElementById('firstName').value = result.firstName;
       document.getElementById('lastName').value = result.lastName;
+      document.getElementById('email').value = result.email;
+      document.getElementById('phoneHome').value = result.phoneHome;
     } else {
       document.getElementById('badgeNumber_error').classList.add("text-danger");
       document.getElementById('badgeNumber_error').classList.remove("text-success");
       //document.getElementById('badgeNumber').value = result.badgeNumber;
-      document.getElementById('firstName').value = "";
-      document.getElementById('lastName').value = null;
+      
+      document.getElementById('firstName').value   = "";
+      document.getElementById('lastName').value    = null;
+      document.getElementById('email').value       = null;
+      document.getElementById('phoneHome').value   = null;
     }
     } catch (error) {
     console.error("An error occurred:", error);
@@ -87,6 +95,8 @@ saveButton.addEventListener('click', () => {
     'badgeNumber' : document.getElementById('badgeNumber').value,
     'firstName'   : document.getElementById('firstName').value,
     'lastName'    : document.getElementById('lastName').value,
+    'email'       : document.getElementById('email').value,
+    'phoneHome' : document.getElementById('phoneHome').value,
   }
   console.log(`studentData: ${JSON.stringify(studentData)}`);
   setFormEnabled(document.getElementById('formStudentData'), true);
@@ -115,7 +125,15 @@ window.electronAPI.saveStudentDataResult((result) => {
       document.getElementById('lastName'), 
       document.getElementById('lastName_error'),
       result.lastName);
-
+    setInputFormStatus(
+      document.getElementById('email'), 
+      document.getElementById('email_error'),
+      result.lastName);
+    setInputFormStatus(
+      document.getElementById('phoneHome'), 
+      document.getElementById('phoneHome_error'),
+      result.lastName);
+      
     if (result.saveStatus == 'ok') {
       document.getElementById('badgeNumber_error').innerHTML = result.saveMessage;
       document.getElementById('badgeNumber_error').classList.remove("text-danger");
@@ -167,6 +185,14 @@ function setFocusedField(result) {
     document.getElementById('lastName').focus();
     return;
   }
+  if (result.email.status === 'err') {
+    document.getElementById('email').focus();
+    return;
+  }
+  if (result.phoneHome.status === 'err') {
+    document.getElementById('phoneHome').focus();
+    return;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -184,5 +210,19 @@ function setFormEnabled(form, isDisabled) {
 }
 
 function trackedFields() {
-  return ['badgeNumber', 'firstName', 'lastName']
+  return [
+    'badgeNumber', 
+    'firstName', 
+    'lastName', 
+    'email', 
+    'phoneHome'
+  ]
 }
+
+//-------------------------------------------------------------------
+window.electronAPI.resetDisplay(() => {
+  console.log(`Students resetDisplay was activated.`);
+  for (let i = 0; i < trackedFields().length; i++) {
+    document.getElementById(trackedFields()[i]).value = '';
+  }
+})

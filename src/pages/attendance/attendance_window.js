@@ -1,14 +1,16 @@
-const {WebContentsView} = require('electron/main') 
+const {WebContentsView, ipcMain} = require('electron/main') 
 const appRoot  = require('app-root-path');
 const path     = require('node:path')  
 const root_dir = process.cwd();
 
+let attendanceView = null;
 function createAttendanceWindow(show_devTools = false) {   
-  const attendanceView = new WebContentsView({
+  attendanceView = new WebContentsView({
     webPreferences: {
       preload: path.join(__dirname, 'attendance_preload.js')
     }     
   });
+  
   attendanceView.setBounds({ x: 10, y: 110, width: 800, height: 800 })
   
   const attendanceViewPath = appRoot + '/src/pages/attendance/attendance_main.html';
@@ -26,14 +28,34 @@ function createAttendanceWindow(show_devTools = false) {
     results = getAttendanceData({}, fetchCallBack);
   });
   function fetchCallBack(results) {
-    console.log(`attendance data was found: ${JSON.stringify(results)}`);
+    //console.log(`attendance data was found: ${JSON.stringify(results)}`);
     attendanceView.webContents.send('displayAttendanceData', results);
   };
 
 
-  return attendanceView;
+  ipcMain.on("fetchAttendanceData", () => {
+    console.log("fetchAttendanceData from webContents");
+  });
 
+
+  attendanceView.webContents.on("resetDisplay", () => {
+    console.log("resetDisplay from webContents");
+  });
+  attendanceView.webContents.on("focus", () => {
+    console.log(`attendanceView received the focus from webcontents`);
+  });
+
+  ipcMain.addListener("resetScreen", () => {
+    console.log("resetScreen");
+  })  
+
+  return attendanceView;
 
 }  
 
-module.exports = {createAttendanceWindow};
+function resetScreenAttendance() {
+  console.log(`attendanceView reset requested`);
+  attendanceView.resetScreen();
+}
+
+module.exports = {createAttendanceWindow, resetScreenAttendance};

@@ -22,7 +22,8 @@ function getAttendanceData(badgeData, callback) {
            rankName, 
            classStartTime
     from   attendance
-    limit  10;
+    order  by checkinDateTime desc, checkinTime desc
+    limit  30;
   `
 
   db.all(search_stmt, [badgeData.badgeNumber], (err, rows) => {
@@ -30,7 +31,7 @@ function getAttendanceData(badgeData, callback) {
       console.error(   {'status': 'err', 'msg': err.message});
       return callback( {'status': 'err', 'msg': err.message});
     } else if (rows) {
-      console.log(`Retrieved rows: ${JSON.stringify(rows)}` );
+      //console.log(`Retrieved rows: ${JSON.stringify(rows)}` );
       return callback(rows);
     } else {
       err_msg = {'status': 'err', 'msg': 'No attendance found for that badge number', 'badgeNumber': badgeData.badgeNumber}
@@ -41,7 +42,30 @@ function getAttendanceData(badgeData, callback) {
   db.close();
 }
 
+function getFormatAllDatesStmt() {
+  return `
+    update attendance 
+    set    checkinDateTime = fdt.formatDateTime
+    from   
+    ( 
+      select attendance_id,
+              (
+                substr(checkinDate, 7, 4) || '-' || substr(checkinDate, 1, 2) || '-' || substr(checkinDate, 4, 2)
+                || ' ' || 
+                case when instr(checkinTime, 'PM') then
+                    cast(cast(substr(checkinTime, 1, 1) as integer) +12 as text) || ':' || substr(checkinTime, 3, 2)
+                    else     
+                    '0' || substr(checkinTime, 1, 1) || ':' || substr(checkinTime, 3, 2)
+              end) as formatDateTime             
+      from   attendance a 
+    ) as fdt
+    where attendance.attendance_id = fdt.attendance_id
+`
+}
+
 //---------------------------------------------------------------
 module.exports = {
   getAttendanceData
 };
+
+

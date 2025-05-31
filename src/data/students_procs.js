@@ -1,7 +1,7 @@
 const sqlite3      = require('sqlite3');
 const appRoot      = require('app-root-path');
 
-const {getAttendanceDatabase} = require(appRoot + '/src/data/create_database.js') ;
+const {getAttendanceDatabaseV2} = require(appRoot + '/src/data/create_database.js') ;
 
 // //---------------------------------------------------------------
 // function createStudentsTable() {
@@ -25,12 +25,22 @@ const {getAttendanceDatabase} = require(appRoot + '/src/data/create_database.js'
 //---------------------------------------------------------------
 function updateStudentsData(studentData) {
   console.log(`updateStudentsData was called: ${JSON.stringify(studentData)}`);
-  const db = getAttendanceDatabase();
+  const db = getAttendanceDatabaseV2();
   db.run(`insert into students 
-    (badgeNumber,firstName,lastName) 
-    values (?, ?, ?) 
-    ON CONFLICT(badgeNumber) DO UPDATE SET firstName = excluded.firstName, lastName = excluded.lastName`, 
-    [studentData.badgeNumber, studentData.firstName, studentData.lastName], 
+    (badgeNumber,firstName,lastName, email, phoneHome) 
+    values (?, ?, ?, ?, ?) 
+    ON CONFLICT(badgeNumber) DO UPDATE SET 
+      firstName = excluded.firstName, 
+      lastName  = excluded.lastName,
+      email     = excluded.email,
+      phoneHome = excluded.phoneHome`
+    , 
+    [ studentData.badgeNumber, 
+      studentData.firstName, 
+      studentData.lastName,
+      studentData.email,
+      studentData.phoneHome
+    ], 
     function(err) {
       if (err) {
         console.error(err.message);
@@ -46,8 +56,13 @@ function updateStudentsData(studentData) {
 function searchStudentsData(badgeData, callback) {
   console.log(`searchStudentsData was called: ${JSON.stringify(badgeData)}`);
   console.log(`badgeNumber: ${badgeData.badgeNumber}`);
-  const db = getAttendanceDatabase();
-  db.get("select badgeNumber,firstName,lastName from students where badgeNumber = ?", [badgeData.badgeNumber], (err, row) => {
+  const db = getAttendanceDatabaseV2();
+  db.get(`select badgeNumber,
+                 firstName,
+                 lastName,
+                 email,
+                 phoneHome
+          from students where badgeNumber = ?`, [badgeData.badgeNumber], (err, row) => {
     if (err) {
       console.error({'status': 'err', 'msg': err.message});
       return callback({'status': 'err', 'msg': err.message});

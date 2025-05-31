@@ -34,6 +34,11 @@ function createCheckinWindow(show_devTools = false) {
       checkinView.webContents.send('saveCheckinResult', results);
     }, sleep_time);    
   }
+
+  ipcMain.on('focus', (event, badgeNumber) => {
+    console.log(`checkinView received the focus`);
+  });
+
   return checkinView;
 }  
 

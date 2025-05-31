@@ -2,12 +2,20 @@ document.addEventListener("DOMContentLoaded", function(event) {
   console.log(`DOMContentLoaded`)
 });
 
+// document.addEventListener("blur", function(event) {
+//   console.log(`document lost focus`)
+// });
+// document.addEventListener("focus", function(event) {
+//   console.log(`document gained focus`)
+// });
+
+
 //-------------------------------------------------------------------
 // invoked by the search button click event
 //-------------------------------------------------------------------
-const searchButton = document.getElementById('fetchButton')
+const searchButton = document.getElementById('refreshButton')
 searchButton.addEventListener('click', () => {
-  console.log(`fetchButton was clicked`)
+  console.log(`refreshButton was clicked`)
 })
 
 //-------------------------------------------------------------------
@@ -15,7 +23,7 @@ searchButton.addEventListener('click', () => {
 //-------------------------------------------------------------------
 window.electronAPI.displayAttendanceData((results) => {
   try {
-    console.log(`displayAttendanceData was activated: ${JSON.stringify(results)}`);
+    //console.log(`displayAttendanceData was activated: ${JSON.stringify(results)}`);
     attendanceTable = document.getElementById('attendanceTable');
     const tbody     = document.createElement('tbody');
     results.forEach(result => {
@@ -39,5 +47,13 @@ window.electronAPI.displayAttendanceData((results) => {
     console.log(`displayAttendanceData exited finally`)
     //setFormEnabled(document.getElementById('formStudentData'), false);
   }
+})
+
+//-------------------------------------------------------------------
+// invoked by the main ipc emit event 
+//-------------------------------------------------------------------
+window.electronAPI.resetDisplay(() => {
+  console.log(`Attendance resetDisplay was activated.`);
+  window.electronAPI.fetchAttendanceData();
 })
 

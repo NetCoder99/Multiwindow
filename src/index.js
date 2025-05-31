@@ -8,7 +8,7 @@ const appRoot = require('app-root-path');
 const {createNavbarWindow}     = require(appRoot + '/src/common/navigation/navbar_window') ;
 const {createCheckinWindow}    = require(appRoot + '/src/pages/checkin/checkin_window.js') ;
 const {createStudentsWindow}   = require(appRoot + '/src/pages/students/students_window.js') ;
-const {createAttendanceWindow} = require(appRoot + '/src/pages/attendance/attendance_window.js') ;
+const {createAttendanceWindow, resetScreenAttendance} = require(appRoot + '/src/pages/attendance/attendance_window.js') ;
 
 app.whenReady().then(() => {
   //createCheckinsTable();
@@ -16,10 +16,10 @@ app.whenReady().then(() => {
   const winBase = new BaseWindow({x: 100, y:100, width: 1280, height: 1024})
 
   // ----------------------------------------------------------------------
-  const navTopView     = createNavbarWindow();
-  const checkinView    = createCheckinWindow();
-  const studentsView   = createStudentsWindow();
-  const attendanceView = createAttendanceWindow(true);
+  var navTopView     = createNavbarWindow();
+  var checkinView    = createCheckinWindow();
+  var studentsView   = createStudentsWindow(false);
+  var attendanceView = createAttendanceWindow(true);
 
   winBase.contentView.addChildView(navTopView);
   winBase.contentView.addChildView(checkinView);
@@ -34,7 +34,7 @@ app.whenReady().then(() => {
   studentsView.setBounds(child_bounds);
   attendanceView.setBounds(child_bounds);
   
-  switchToSelectedPage('attendance');
+  switchToSelectedPage('checkin');
 
   // ----------------------------------------------------------------------
   winBase.on('resize', () => {
@@ -66,11 +66,11 @@ app.whenReady().then(() => {
     if (buttonNameLower.includes("attendance")) {
       studentsView.setVisible(false);
       checkinView.setVisible(false);
-      attendanceView.setVisible(true);
+      attendanceView.setVisible(true);attendanceView.webContents.send('resetDisplay');
     } else if (buttonNameLower.includes("student")) {
-      studentsView.setVisible(true);
       checkinView.setVisible(false);
       attendanceView.setVisible(false);
+      studentsView.setVisible(true);studentsView.webContents.send('resetDisplay');
     } else {
       studentsView.setVisible(false);
       checkinView.setVisible(true);
