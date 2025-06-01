@@ -27,7 +27,8 @@ function formatCheckinDateTime(date) {
   day     = String(date.getDate()).padStart(2, '0');
   hour    = String(date.getHours()).padStart(2, '0');
   minutes = String(date.getMinutes()).padStart(2, '0');
-  return `${year}-${month}-${day} ${hour}:${minutes}:00` 
+  seconds = String(date.getSeconds()).padStart(2, '0');
+  return `${year}-${month}-${day} ${hour}:${minutes}:${seconds}` 
 }
 
 

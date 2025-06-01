@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 const searchButton = document.getElementById('refreshButton')
 searchButton.addEventListener('click', () => {
   console.log(`refreshButton was clicked`)
+  window.electronAPI.fetchAttendanceData();
 })
 
 //-------------------------------------------------------------------
@@ -23,12 +24,13 @@ searchButton.addEventListener('click', () => {
 //-------------------------------------------------------------------
 window.electronAPI.displayAttendanceData((results) => {
   try {
-    //console.log(`displayAttendanceData was activated: ${JSON.stringify(results)}`);
+    console.log(`displayAttendanceData was activated`);
     attendanceTable = document.getElementById('attendanceTable');
-    const tbody     = document.createElement('tbody');
+    const tbody     = document.getElementById('attendanceTableBody');
+    tbody.innerHTML = "";
     results.forEach(result => {
       console.log(JSON.stringify(result));
-      const row = attendanceTable.insertRow();
+      const row = tbody.insertRow();
       const cell1 = row.insertCell(0);
       cell1.innerHTML = result.attendance_id;
       const cell2 = row.insertCell(1);

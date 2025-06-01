@@ -23,19 +23,19 @@ function createAttendanceWindow(show_devTools = false) {
   let dbPath  = path.join(root_dir, 'src', 'data', 'attendance_procs');
   const {getAttendanceData}  = require(dbPath)
 
+  // ----------------------------------------------------------------------
   attendanceView.webContents.once("did-finish-load", () => {
     console.log("did-finish-load");
+    results = getAttendanceData({}, fetchCallBack);
+  });
+  ipcMain.on("fetchAttendanceData", () => {
+    console.log("fetchAttendanceData from webContents");
     results = getAttendanceData({}, fetchCallBack);
   });
   function fetchCallBack(results) {
     //console.log(`attendance data was found: ${JSON.stringify(results)}`);
     attendanceView.webContents.send('displayAttendanceData', results);
   };
-
-
-  ipcMain.on("fetchAttendanceData", () => {
-    console.log("fetchAttendanceData from webContents");
-  });
 
 
   attendanceView.webContents.on("resetDisplay", () => {
@@ -45,9 +45,9 @@ function createAttendanceWindow(show_devTools = false) {
     console.log(`attendanceView received the focus from webcontents`);
   });
 
-  ipcMain.addListener("resetScreen", () => {
-    console.log("resetScreen");
-  })  
+  // ipcMain.addListener("resetScreen", () => {
+  //   console.log("resetScreen");
+  // })  
 
   return attendanceView;
 

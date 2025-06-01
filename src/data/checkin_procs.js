@@ -1,10 +1,10 @@
 const { platform } = require('node:process');
 const appRoot      = require('app-root-path');
-const fs           = require('fs');
-const sqlite3      = require('sqlite3');
 
-//const {getAttendanceDatabaseV2} = require(appRoot + '/src/data/create_database.js') ;
-const {getAttendanceDatabase} = require(appRoot + '/src/data/create_database.js') ;
+const sqlite3 = require('sqlite3').verbose();
+const sqlite = require('sqlite');
+
+
 const {getAttendanceDatabaseV2} = require(appRoot + '/src/data/create_database.js') ;
 const {formatCheckinDate, formatCheckinTime, formatCheckinDateTime} = require(appRoot + '/src/common/format_date.js') ;
 
@@ -25,10 +25,13 @@ const {formatCheckinDate, formatCheckinTime, formatCheckinDateTime} = require(ap
 // }
 
 //---------------------------------------------------------------
-function insertCheckinRecord(badgeNumber) {
+async function insertCheckinRecord(badgeNumber) {
   console.log(`insertCheckinRecord was called: ${badgeNumber}`);
   //const db = new sqlite3.Database(db_location);
   const db = getAttendanceDatabaseV2();
+  
+  const user = await getStudentData(badgeNumber);
+  //const studentData = getStudentDetails(db, badgeNumber); 
 
   const crnt_datetime = new Date();crnt_datetime.toISOString().replace('T', ' ')
   checkinDateTime = formatCheckinDateTime(crnt_datetime);
@@ -36,10 +39,10 @@ function insertCheckinRecord(badgeNumber) {
   checkinTime     = formatCheckinTime(crnt_datetime);
   console.log(`badgeNumber: ${badgeNumber} -- checkinDate:${checkinDate} - checkinTime:${checkinTime}`);
   db.run(
-    `INSERT INTO attendance(badgeNumber, checkinDateTime, checkinDate, checkinTime)
-    VALUES(?, ?, ?, ?);`
+    `INSERT INTO attendance(badgeNumber, checkinDateTime, checkinDate, checkinTime, studentName)
+    VALUES(?, ?, ?, ?, ?);`
     , 
-    [badgeNumber, checkinDateTime, checkinDate, checkinTime], 
+    [badgeNumber, checkinDateTime, checkinDate, checkinTime, user.studentName], 
     function(err) {
       if (err) {
         console.error(err.message);
@@ -49,21 +52,53 @@ function insertCheckinRecord(badgeNumber) {
     }
   ); 
 
-//   db.run(
-//     `insert into checkins (badgeNumber, checkinDate, checkinTime) 
-//      values (?, datetime('now', 'localtime'))`, 
-//    [badgeNumber,], 
-//    function(err) {
-//      if (err) {
-//        console.error(err.message);
-//      } else {
-//        console.log(`Checkin row(s) inserted or updated: ${this.changes}`);
-//      }
-//    }
-//  ); 
-
  db.close();
 }
+
+async function getStudentData(badgeNumber) {
+  const shared_folder = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Preferences' : process.env.HOME + "/.local/share")
+  const db_directory = shared_folder + '/Attendance' + '/AttendanceV2.db'
+  //const db = getAttendanceDatabaseV2();
+  let db;
+  try {
+    db = await sqlite.open({
+      filename: db_directory,
+      driver: sqlite3.Database
+    });
+    const slctStmt = `
+      select badgeNumber, firstName || ' ' || lastName as studentName
+      from   students s 
+      where  badgeNumber = ?
+    `;
+    const row = await db.get(slctStmt, badgeNumber);
+    return row;
+  } catch (err) {
+    console.error('Error fetching row:', err);
+    throw err; // Re-throw the error for handling by the caller
+  } finally {
+    if (db) {
+      await db.close();
+    }
+  }
+}
+
+// //---------------------------------------------------------------
+// function getStudentDetails(db, badgeNumber) {
+//   const slctStmt = `
+//     select badgeNumber, firstName || ' ' || lastName as studentName
+//     from   students s 
+//     where  badgeNumber = ${badgeNumber}
+//   `;
+
+//   db.get(slctStmt, (err, row) => {
+//     if (err) {
+//       console.error(err.message);
+//       return {};
+//     }
+//     return row;
+//   });
+//   db.close();
+// }
 
 //---------------------------------------------------------------
 function searchCheckinsData(badgeNumber, callback) {

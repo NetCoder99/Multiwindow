@@ -23,7 +23,7 @@ function getAttendanceData(badgeData, callback) {
            classStartTime
     from   attendance
     order  by checkinDateTime desc, checkinTime desc
-    limit  30;
+    limit  10;
   `
 
   db.all(search_stmt, [badgeData.badgeNumber], (err, rows) => {
@@ -60,6 +60,21 @@ function getFormatAllDatesStmt() {
       from   attendance a 
     ) as fdt
     where attendance.attendance_id = fdt.attendance_id
+`
+}
+
+function updateMissingStudentDetails() {
+  return `
+    update attendance 
+    set    studentName = std.studentName
+    from 
+    (
+      select badgeNumber, 
+            firstName || ' ' || lastName as studentName
+      from   students s 
+    ) as std
+    where  attendance.studentName is NULL
+    and    attendance.badgeNumber = std.badgeNumber
 `
 }
 

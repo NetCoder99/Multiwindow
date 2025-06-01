@@ -57,6 +57,7 @@ function searchStudentsData(badgeData, callback) {
   console.log(`searchStudentsData was called: ${JSON.stringify(badgeData)}`);
   console.log(`badgeNumber: ${badgeData.badgeNumber}`);
   const db = getAttendanceDatabaseV2();
+
   db.get(`select badgeNumber,
                  firstName,
                  lastName,
@@ -78,6 +79,8 @@ function searchStudentsData(badgeData, callback) {
   });
   db.close();
 }
+
+
 
 //---------------------------------------------------------------
 module.exports = {
