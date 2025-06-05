@@ -14,7 +14,7 @@ function createAttendanceWindow(show_devTools = false) {
   attendanceView.setBounds({ x: 10, y: 110, width: 800, height: 800 })
   
   const attendanceViewPath = appRoot + '/src/pages/attendance/attendance_main.html';
-  attendanceView.webContents.loadURL(attendanceViewPath);
+  attendanceView.webContents.loadFile(attendanceViewPath);
   attendanceView.setVisible(false);;
   if (show_devTools) {
     attendanceView.webContents.openDevTools();
