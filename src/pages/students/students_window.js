@@ -11,7 +11,7 @@ function createStudentsWindow(show_devTools = false) {
   });
   studentView.setBounds({ x: 10, y: 110, width: 800, height: 800 });
   const studentViewPath = appRoot + '/src/pages/students/student_details.html';
-  studentView.webContents.loadURL(studentViewPath);
+  studentView.webContents.loadFile(studentViewPath);
   studentView.setVisible(false);
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -66,6 +66,9 @@ function createStudentsWindow(show_devTools = false) {
     }, sleep_time);    
   };
 
+
+
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   if (show_devTools) {
     studentView.webContents.openDevTools();
   }

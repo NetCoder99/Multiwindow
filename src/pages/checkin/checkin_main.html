@@ -13,21 +13,24 @@
 <body>
   <div class="container">
     <div id="first_spacer" style="height: 5rem;"></div>
-
-     <!-- vh-100 here-->
       <div class="row">
         <div class="col-md-2"></div>
-        <div class="col-md-8  mx-auto border rounded-5 ps-5 pt-4 pb-3 main_form">
-          <h2 class="fw-bold"> Please checkin before starting class...</h2>
-          <form class="">
-            <input type="text" class="form-control" id="badgeNumberInp" style="width: 12rem;">
+        <div class="col-md-8  mx-auto border rounded-5 ps-5 pt-4 pb-3 main_form text-center">
+          <h2 class="fw-bold mx-auto"> Please checkin before starting class...</h2>
+          <form class="mx-auto">
+            <input type="text" class="form-control mx-auto" id="badgeNumberInp" style="width: 12rem;">
           </form>
-          <h3 id="checkinLbl" class=" mt-2">Waiting for checkin ...</h3>
         </div>
         <div class="col-md-2"></div>
-
       </div>  
-    <script src="checkin_renderer.js"></script>
+      <div class="row mt-2">
+        <div class="col-md-2"></div>
+        <div class="col-md-8  mx-auto border rounded-5 ps-5 pt-4 pb-3">
+          <h3 id="checkinLbl" class=" mt-2"></h3>
+        </div>
+        <div class="col-md-2"></div>
+      </div>  
+      <script src="checkin_renderer.js"></script>
 
   </div>
 </body>

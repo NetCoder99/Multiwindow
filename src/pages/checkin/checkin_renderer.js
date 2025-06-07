@@ -46,5 +46,5 @@ function resetCheckinDisplay() {
   checkinLbl.classList.remove("text-warning"); 
   checkinLbl.classList.remove("text-danger"); 
   checkinLbl.classList.remove("text-success"); 
-  checkinLbl.innerHTML  = 'Waiting for check-in ...';
+  checkinLbl.innerHTML  = '';
 }

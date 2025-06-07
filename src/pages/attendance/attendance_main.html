@@ -6,8 +6,12 @@
   <title>Checkin Main Page</title>
   <link rel="stylesheet" href="../../main.css" />
   <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="../../../node_modules/@eonasdan/tempus-dominus/dist/css/tempus-dominus.min.css" />
   <script src='../../../node_modules/bootstrap/dist/js/bootstrap.js'></script>
   <script src='../../../node_modules/jquery/dist/jquery.min.js'></script>
+  <script src='../../../node_modules/jquery/dist/jquery.min.js'></script>
+  <script src="../../../node_modules/@eonasdan/tempus-dominus/dist/js/tempus-dominus.min.js"></script>
+  
 </head>
 
 <body>
@@ -16,6 +20,8 @@
   </div>
   <div>
     <button id="refreshButton" class="btn btn-success btn-sm ml-3" type="button">Refresh</button>
+    <input type="text" id="ranged">
+
     <table id="attendanceTable" class="table">
       <thead>
           <tr>
@@ -33,6 +39,19 @@
   </div>
 
   <script src="attendance_renderer.js"></script>
+  <script>
+    $( document ).ready(function() {
+        console.log( "ready!" );
+
+        //new TempusDominus(document.getElementById('datetimepicker1'), {});
+
+        var ranged = new datepicker('#ranged', {
+        inline: true,
+        ranged: true,
+        time: true
+      });
+    });    
+  </script>
 </body>
 
 </html>

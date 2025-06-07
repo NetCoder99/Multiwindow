@@ -157,6 +157,33 @@ window.electronAPI.saveStudentDataResult((result) => {
   }
 })
 
+
+//-------------------------------------------------------------------
+// invoked by the generate badge button click event
+//-------------------------------------------------------------------
+const generateButton = document.getElementById('generateButton')
+generateButton.addEventListener('click', () => {
+  console.log('Generate button was clicked')
+  studentData = {
+    'badgeNumber' : document.getElementById('badgeNumber').value
+  }
+  console.log(`studentData: ${JSON.stringify(studentData)}`);
+  setFormEnabled(document.getElementById('formStudentData'), true);
+  document.getElementById('badgeNumber_error').innerHTML = "Generating student badge ...";
+  document.getElementById('badgeNumber_error').classList.remove("text-danger");
+  document.getElementById('badgeNumber_error').classList.add("text-success");
+  window.electronAPI.generateBadge(studentData);
+})
+//-------------------------------------------------------------------
+window.electronAPI.generateBadgeResult((result) => {
+  console.log(`generateBadgeResult was activated: ${JSON.stringify(result)}`)
+  setFormEnabled(document.getElementById('formStudentData'), false);
+  document.getElementById('badgeNumber_error').innerHTML = "Badge was generated";
+  document.getElementById('badgeNumber_error').classList.remove("text-danger");
+  document.getElementById('badgeNumber_error').classList.add("text-success");
+})
+
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 function setInputFormStatus(form_element, err_element, field_status, focus_field) {
   if (field_status.status === 'err') {

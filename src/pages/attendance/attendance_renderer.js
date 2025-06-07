@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function(event) {
-  console.log(`DOMContentLoaded`)
+  console.log(`Attendance DOMContentLoaded`)
+
 });
 
 // document.addEventListener("blur", function(event) {

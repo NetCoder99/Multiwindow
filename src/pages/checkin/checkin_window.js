@@ -16,7 +16,7 @@ function createCheckinWindow(show_devTools = false) {
   })
   checkinView.setBounds({ x: 10, y: 110, width: 800, height: 800 })
   const checkinViewPath = appRoot + '/src/pages/checkin/checkin_main.html'
-  checkinView.webContents.loadURL(checkinViewPath)
+  checkinView.webContents.loadFile(checkinViewPath)
   checkinView.setVisible(false);
   if (show_devTools) {
     checkinView.webContents.openDevTools();

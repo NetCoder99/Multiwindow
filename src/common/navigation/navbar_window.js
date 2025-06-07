@@ -8,7 +8,7 @@ function createNavbarWindow(show_devTools = false) {
     });
     navTopView.setBounds({ x: 10, y: 10, width: 800, height: 100 });
     const navTopViewPath = appRoot + '/src/common/navigation/navbar_buttons.html';
-    navTopView.webContents.loadURL(navTopViewPath);
+    navTopView.webContents.loadFile(navTopViewPath);
     if (show_devTools) {
       navTopView.webContents.openDevTools();
     }
