@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Student Details Manager</title>
+  <link rel="stylesheet" href="../../styles/main.css" />
+  <link rel="stylesheet" href="./../../../node_modules/bootstrap/dist/css/bootstrap.min.css" />
+  <script src='./../../../node_modules/bootstrap/dist/js/bootstrap.min.js'></script>
+  <script src='./../../../node_modules/jquery/dist/jquery.min.js'></script>
+</head>
+
+<body>
+  <div class="container" style="height: 600px;">
+
+    <div class="text-center">
+      <h1 >Student Main</h1>
+    </div>
+
+
+    <div class="col-md-8 order-md-1 mx-auto">
+      <form id="formStudentData" class="needs-validation" >
+        <div class="row"  style="height: 800px; width: 800px;">
+
+          <div class="col-sm-4 border ">
+            <button id="selectPicture" class="btn btn-primary btn-lg btn-block m-3" type="button">Select Picture</button>
+            <img id="studentPicture" src="../../images/RISING SUN MA.gif" alt="Please select a picutre!" style="height:300px;" > 
+          </div>
+
+          <div class="row">
+            <div class="col-sm-8 border">
+              <div class="col-md-6 mb-3">
+                <label for="firstName">First name</label>
+                <input type="text" class="form-control" id="firstName" placeholder="" value="">
+                <div id='firstName_error'  class="col text-start text-danger"></div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="lastName">Last name</label>
+                <input type="text" class="form-control" id="lastName" placeholder="" value="">
+                <div id='lastName_error'  class="col text-start text-danger"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script src="students_renderer.js"></script>  
+</body>
+
+</html>

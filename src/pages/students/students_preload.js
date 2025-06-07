@@ -16,4 +16,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   searchByBadgeResult   : (callback)    => ipcRenderer.on('searchByBadgeResult', (_event, value) => callback(value)),
   generateBadge         : (badgeData)   => ipcRenderer.send('generateBadge', badgeData),
   generateBadgeResult   : (callback)    => ipcRenderer.on('generateBadgeResult', (_event, value) => callback(value)),
+  selectPicture         : ()            => ipcRenderer.send('selectPicture'),
+  selectPictureResult   : (callback)    => ipcRenderer.on('selectPictureResult', (_event, value) => callback(value)),
 })

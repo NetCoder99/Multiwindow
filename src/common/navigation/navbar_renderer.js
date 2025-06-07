@@ -31,3 +31,15 @@ document.getElementById('btnAttendance').addEventListener('click', (event) => {
   console.log(`Attendance button was clicked ${btnClickCount} times.`);
   window.electronAPI.changePage("btnAttendance");
 })
+
+//-------------------------------------------------------------------
+// invoked by the main ipc emit event 
+//-------------------------------------------------------------------
+window.electronAPI.changePageResult((result) => {
+  console.log(`changePageResult was activated: ${JSON.stringify(result)}`)
+  const buttons = document.querySelectorAll('button');
+  for (let i = 0; i < buttons.length; i++) {
+    buttons[i].disabled = false;
+  }
+  document.getElementById(result.buttonName).disabled = true;
+})

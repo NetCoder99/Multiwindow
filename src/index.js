@@ -1,4 +1,4 @@
-const { app, BaseWindow, WebContentsView, BrowserWindow,ipcMain } = require('electron')
+const { app, BaseWindow, WebContentsView, BrowserWindow, ipcMain, protocol } = require('electron')
 const PDFWindow = require('electron-pdf-window')
 const path      = require('node:path')  
 const appRoot   = require('app-root-path');
@@ -70,16 +70,19 @@ app.whenReady().then(() => {
     if (buttonNameLower.includes("attendance")) {
       studentsView.setVisible(false);
       checkinView.setVisible(false);
-      attendanceView.setVisible(true);attendanceView.webContents.send('resetDisplay');
+      attendanceView.setVisible(true);
+      attendanceView.webContents.send('resetDisplay');
     } else if (buttonNameLower.includes("student")) {
       checkinView.setVisible(false);
       attendanceView.setVisible(false);
-      studentsView.setVisible(true);studentsView.webContents.send('resetDisplay');
+      studentsView.setVisible(true);
+      studentsView.webContents.send('resetDisplay');
     } else {
       studentsView.setVisible(false);
       checkinView.setVisible(true);
       attendanceView.setVisible(false);
     }
+    navTopView.webContents.send('changePageResult', {'buttonName' : buttonName});
   }
 
 
@@ -110,12 +113,12 @@ app.whenReady().then(() => {
 
   });
   
-// ------------------------------------------------------------
-function doneWritingPdf() {
-  console.log(`doneWritingPdf is creating pdf window`);
-  createPDFWindow();
-  //app.quit();
-}
+  // ------------------------------------------------------------
+  function doneWritingPdf() {
+    console.log(`doneWritingPdf is creating pdf window`);
+    createPDFWindow();
+    //app.quit();
+  }
 
 
 });

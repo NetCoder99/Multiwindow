@@ -7,9 +7,9 @@ contextBridge.exposeInMainWorld('versions', {
 })
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  quitButton      : () => ipcRenderer.send('quitButtonClicked'),
-  changePage      : (page_name) => ipcRenderer.send('pageButtonClicked', page_name),
-  studentsButton  : () => ipcRenderer.send('studentsButtonClicked'),
-  checkinButton   : () => ipcRenderer.send('checkinButtonClicked'),
-
+  quitButton       : () => ipcRenderer.send('quitButtonClicked'),
+  changePage       : (page_name) => ipcRenderer.send('pageButtonClicked', page_name),
+  changePageResult : (callback)  => ipcRenderer.on('changePageResult', (_event, value) => callback(value)),  
+  studentsButton   : () => ipcRenderer.send('studentsButtonClicked'),
+  checkinButton    : () => ipcRenderer.send('checkinButtonClicked'),
 })

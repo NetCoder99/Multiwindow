@@ -1,7 +1,9 @@
-const {WebContentsView, ipcMain} = require('electron/main') 
+const {WebContentsView, ipcMain, dialog } = require('electron/main') 
 const appRoot  = require('app-root-path');
 const path     = require('node:path')  
+const fs       = require('fs');
 const root_dir = process.cwd();
+
 
 function createStudentsWindow(show_devTools = false) {  
   const studentView = new WebContentsView({
@@ -10,7 +12,8 @@ function createStudentsWindow(show_devTools = false) {
     }     
   });
   studentView.setBounds({ x: 10, y: 110, width: 800, height: 800 });
-  const studentViewPath = appRoot + '/src/pages/students/student_details.html';
+  //const studentViewPath = appRoot + '/src/pages/students/student_details.html';
+  const studentViewPath = appRoot + '/src/pages/students/student_main.html';
   studentView.webContents.loadFile(studentViewPath);
   studentView.setVisible(false);
 
@@ -66,13 +69,26 @@ function createStudentsWindow(show_devTools = false) {
     }, sleep_time);    
   };
 
-
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  ipcMain.on('selectPicture', (event) => {
+    console.log(`selectPicture was clicked`);
+    dialog.showOpenDialog({ properties: ['openFile'] })
+    .then(result => savePictureSelectionResult(result))
+    .catch(err => console.log(err));
+  })  
+  function savePictureSelectionResult(selectPictureResult) {
+    console.log(`savePictureSelection: ${selectPictureResult.filePaths[0]}`)
+    const base64 = fs.readFileSync(selectPictureResult.filePaths[0]).toString('base64');
+    studentView.webContents.send('selectPictureResult', base64);
+  }
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   if (show_devTools) {
     studentView.webContents.openDevTools();
   }
   return studentView;
+
+
 }  
 
 module.exports = {createStudentsWindow};
