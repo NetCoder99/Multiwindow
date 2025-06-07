@@ -9,10 +9,11 @@ const appRoot   = require('app-root-path');
 const {createBadgePdf}         = require(appRoot + '/src/barcode_printer/badge_generator.js');
 const {getTestStudentData}     = require(appRoot + '/src/barcode_printer/test_data.js');
 
-const {createNavbarWindow}     = require(appRoot + '/src/common/navigation/navbar_window') ;
-const {createCheckinWindow}    = require(appRoot + '/src/pages/checkin/checkin_window.js') ;
-const {createStudentsWindow}   = require(appRoot + '/src/pages/students/students_window.js') ;
+const {createNavbarWindow}     = require(appRoot + '/src/common/navigation/navbar_window');
+const {createCheckinWindow}    = require(appRoot + '/src/pages/checkin/checkin_window.js');
+const {createStudentsWindow}   = require(appRoot + '/src/pages/students/students_window.js');
 const {createAttendanceWindow, resetScreenAttendance} = require(appRoot + '/src/pages/attendance/attendance_window.js') ;
+const {getBadgeData}           = require(appRoot + '/src/data/badge_procs.js');
 
 app.whenReady().then(() => {
   //createCheckinsTable();
@@ -101,15 +102,23 @@ app.whenReady().then(() => {
   }
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  ipcMain.on('generateBadge', (event, studentData) => {
+  ipcMain.on('generateBadge', async (event, studentData) => {
     console.log(`generateBadge was clicked: ${JSON.stringify(studentData)}`);
-    studentData = getTestStudentData();
-    result = {'status' : 'processing ...'};
-    createBadgePdf(studentData, doneWritingPdf)
-    setTimeout(() => {
-      console.log(`generateBadge is processing`);
+    if (!studentData.badgeNumber) {
+      const result = {'error' : 'Badge number is required.'}
       studentsView.webContents.send('generateBadgeResult', result);
-    }, 1000);    
+    }
+    else {
+      studentBadgeData  = getTestStudentData();
+      studentBadgeData2 = await getBadgeData(studentData.badgeNumber);
+      result = {'status' : 'processing ...'};
+      createBadgePdf(studentBadgeData, doneWritingPdf)
+      setTimeout(() => {
+        console.log(`generateBadge is processing`);
+        const result = {'error': ''};
+        studentsView.webContents.send('generateBadgeResult', result);
+      }, 1000);    
+    }
 
   });
   
