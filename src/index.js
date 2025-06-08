@@ -1,19 +1,15 @@
-const { app, BaseWindow, WebContentsView, BrowserWindow, ipcMain, protocol } = require('electron')
-const PDFWindow = require('electron-pdf-window')
-const path      = require('node:path')  
+const { app, BaseWindow, WebContentsView, BrowserWindow, ipcMain, protocol } = require('electron');
+const PDFWindow = require('electron-pdf-window');
+const path      = require('node:path');
 const appRoot   = require('app-root-path');
 
-//const {createCheckinsTable}    = require(appRoot + '/src/data/checkin_procs.js');
-//const {createStudentsTable}    = require(appRoot + '/src/data/students_procs.js');
-
-const {createBadgePdf}         = require(appRoot + '/src/barcode_printer/badge_generator.js');
-const {getTestStudentData}     = require(appRoot + '/src/barcode_printer/test_data.js');
+const {generateStudentBadge}   = require(appRoot + '/src/common/badge_procs.js');
+//const {getTestStudentData}     = require(appRoot + '/src/barcode_printer/test_data.js');
 
 const {createNavbarWindow}     = require(appRoot + '/src/common/navigation/navbar_window');
 const {createCheckinWindow}    = require(appRoot + '/src/pages/checkin/checkin_window.js');
 const {createStudentsWindow}   = require(appRoot + '/src/pages/students/students_window.js');
 const {createAttendanceWindow, resetScreenAttendance} = require(appRoot + '/src/pages/attendance/attendance_window.js') ;
-const {getBadgeData}           = require(appRoot + '/src/data/badge_procs.js');
 
 app.whenReady().then(() => {
   //createCheckinsTable();
@@ -23,7 +19,7 @@ app.whenReady().then(() => {
   // ----------------------------------------------------------------------
   var navTopView     = createNavbarWindow();
   var checkinView    = createCheckinWindow();
-  var studentsView   = createStudentsWindow(true);
+  var studentsView   = createStudentsWindow();
   var attendanceView = createAttendanceWindow();
 
   winBase.contentView.addChildView(navTopView);
@@ -86,48 +82,11 @@ app.whenReady().then(() => {
     navTopView.webContents.send('changePageResult', {'buttonName' : buttonName});
   }
 
-
-
-  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  function createPDFWindow () {
-    const pdfWindow = new PDFWindow({
-      width: 1200,
-      height: 800,
-      webPreferences: {
-        preload: path.join(__dirname, 'preload.js')
-      }
-    });
-    pdfPath = appRoot + '/output/test_file2.pdf';
-    pdfWindow.loadFile(pdfPath);
-  }
-
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   ipcMain.on('generateBadge', async (event, studentData) => {
     console.log(`generateBadge was clicked: ${JSON.stringify(studentData)}`);
-    if (!studentData.badgeNumber) {
-      const result = {'error' : 'Badge number is required.'}
-      studentsView.webContents.send('generateBadgeResult', result);
-    }
-    else {
-      studentBadgeData  = getTestStudentData();
-      studentBadgeData2 = await getBadgeData(studentData.badgeNumber);
-      result = {'status' : 'processing ...'};
-      createBadgePdf(studentBadgeData, doneWritingPdf)
-      setTimeout(() => {
-        console.log(`generateBadge is processing`);
-        const result = {'error': ''};
-        studentsView.webContents.send('generateBadgeResult', result);
-      }, 1000);    
-    }
-
+    generateStudentBadge(studentData, studentsView);
   });
-  
-  // ------------------------------------------------------------
-  function doneWritingPdf() {
-    console.log(`doneWritingPdf is creating pdf window`);
-    createPDFWindow();
-    //app.quit();
-  }
 
 
 });
