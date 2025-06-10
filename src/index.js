@@ -14,12 +14,15 @@ const {createAttendanceWindow, resetScreenAttendance} = require(appRoot + '/src/
 app.whenReady().then(() => {
   //createCheckinsTable();
   //createStudentsTable();
-  const winBase = new BaseWindow({x: 100, y:100, width: 1280, height: 1024})
+  const winBase = new BaseWindow(
+    {x: 100, y:100, width: 1280, height: 1024, kiosk: false}
+  );
+  //winBase.maximize();
 
   // ----------------------------------------------------------------------
   var navTopView     = createNavbarWindow();
   var checkinView    = createCheckinWindow();
-  var studentsView   = createStudentsWindow();
+  var studentsView   = createStudentsWindow(true);
   var attendanceView = createAttendanceWindow();
 
   winBase.contentView.addChildView(navTopView);

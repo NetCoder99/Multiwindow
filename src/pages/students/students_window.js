@@ -13,8 +13,8 @@ function createStudentsWindow(show_devTools = false) {
     }     
   });
   studentView.setBounds({ x: 10, y: 110, width: 800, height: 800 });
-  const studentViewPath = appRoot + '/src/pages/students/student_details.html';
-  //const studentViewPath = appRoot + '/src/pages/students/student_main.html';
+  //const studentViewPath = appRoot + '/src/pages/students/student_details.html';
+  const studentViewPath = appRoot + '/src/pages/students/student_main.html';
   studentView.webContents.loadFile(studentViewPath);
   studentView.setVisible(false);
 

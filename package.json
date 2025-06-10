@@ -18,6 +18,7 @@
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.6",
     "canvas": "^3.1.0",
+    "ejs": "^3.1.10",
     "electron-pdf-window": "^1.0.12",
     "jquery": "^3.7.1",
     "js-datepicker": "^5.18.4",
