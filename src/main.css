@@ -13,3 +13,8 @@ input:valid {
 .main_form {
   background-color: #f2ffe6;
 }
+
+input::placeholder {
+  font-style: italic; /* Change to 'italic', 'normal', or 'oblique' */
+  opacity: 0.1;
+}

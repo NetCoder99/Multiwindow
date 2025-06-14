@@ -4,6 +4,9 @@ const {getDatabaseLocation} = require(appRoot + '/src/data/create_database.js');
 const sqlite3 = require('sqlite3').verbose();
 const sqlite  = require('sqlite');
 
+//ALTER TABLE students ADD studentImage     BLOB;
+//ALTER TABLE students ADD studentImagePath TEXT;
+
 const getBadgeDataStr = `
   select badgeNumber   as badgeNumber ,
         firstName     as firstName ,
@@ -14,9 +17,9 @@ const getBadgeDataStr = `
         'Since: '    || memberSince  as subField2,
         '/src/images/RSM_Logo1.jpg'  as schoolLogoPath,
         '/src/images/RSM_Logo1.jpg'  as studentImagePath,
-        '/src/images/1565.png'       as barcodeImagePath
+        '/src/images/1565.png'       as barcodeImagePath,
+        studentImage                 as studentImage 
   from students where badgeNumber = ?`;
-
 
 //---------------------------------------------------------------
 async function getBadgeData(badgeNumber) {
@@ -40,5 +43,38 @@ async function getBadgeData(badgeNumber) {
   }
 }
 
+
 //---------------------------------------------------------------
-module.exports = {getBadgeData}
+// {}
+//---------------------------------------------------------------
+async function savePictureData(pictureData) {
+  const db_directory = getDatabaseLocation();
+  let db;
+  try {
+    const db = new sqlite3.Database(db_directory); 
+    const updateStmt = db.prepare(`
+      update students 
+      set    studentImage = ?
+      where  badgeNumber  = ?
+    `);
+    
+    updateStmt.run(pictureData.imageBuffer, pictureData.badgeNumber, (err) => {
+      if (err) {
+        console.error('Error inserting image:', err);
+      } else {
+        console.log('Image inserted successfully!');
+      }
+      updateStmt.finalize();
+    });
+  } catch (err) {
+    console.error('Error fetching row:', err);
+    throw err; // Re-throw the error for handling by the caller
+  } finally {
+    if (db) {
+      await db.close();
+    }
+  }
+}
+
+//---------------------------------------------------------------
+module.exports = {getBadgeData, savePictureData}

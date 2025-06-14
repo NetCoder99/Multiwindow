@@ -15,7 +15,7 @@ app.whenReady().then(() => {
   //createCheckinsTable();
   //createStudentsTable();
   const winBase = new BaseWindow(
-    {x: 100, y:100, width: 1280, height: 1024, kiosk: false}
+    {x: 100, y:100, width: 1400, height: 1024, kiosk: false}
   );
   //winBase.maximize();
 

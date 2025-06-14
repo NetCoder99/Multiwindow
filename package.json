@@ -24,6 +24,7 @@
     "js-datepicker": "^5.18.4",
     "jsbarcode": "^3.11.6",
     "pdfkit": "^0.17.1",
+    "sharp": "^0.34.2",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7"
   }

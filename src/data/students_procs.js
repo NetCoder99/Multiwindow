@@ -1,7 +1,8 @@
+const sqlite       = require('sqlite');
 const sqlite3      = require('sqlite3');
 const appRoot      = require('app-root-path');
 
-const {getAttendanceDatabaseV2} = require(appRoot + '/src/data/create_database.js') ;
+const {getAttendanceDatabaseV2, getDatabaseLocation} = require(appRoot + '/src/data/create_database.js') ;
 
 // //---------------------------------------------------------------
 // function createStudentsTable() {
@@ -57,7 +58,6 @@ function searchStudentsData(badgeData, callback) {
   console.log(`searchStudentsData was called: ${JSON.stringify(badgeData)}`);
   console.log(`badgeNumber: ${badgeData.badgeNumber}`);
   const db = getAttendanceDatabaseV2();
-
   db.get(`select badgeNumber,
                  firstName,
                  lastName,
@@ -80,11 +80,57 @@ function searchStudentsData(badgeData, callback) {
   db.close();
 }
 
-
+// ----------------------------------------------------------------------------------------------
+// 
+// ----------------------------------------------------------------------------------------------
+const searchStudentStmt = `
+  SELECT  badgeNumber 
+       ,ifnull(firstName,  '') as firstName
+       ,''                     as middleName
+       ,ifnull(lastName,   '') as lastName 
+       ,ifnull(namePrefix, '') as namePrefix 
+       ,ifnull(email,      '') as email
+       ,ifnull(address,    '') as address
+       ,ifnull(address2,   '') as address2
+       ,ifnull(city,       '') as city
+       ,ifnull(country,    '') as country
+       ,ifnull(state,      '') as state
+       ,ifnull(zip,        '') as zipCode
+       ,ifnull(birthDate,  '') as birthDate
+       ,ifnull(phoneHome,  '') as phoneHome
+       ,ifnull(phoneMobile, '') as phoneMobile
+       ,ifnull(status,      '') as status
+       ,ifnull(memberSince, '') as memberSince
+       ,ifnull(gender,      '') as gender
+       ,ifnull(currentRank, '') as currentRank
+       ,ifnull(ethnicity,   '') as ethnicity
+  FROM students
+  where  badgeNumber = ?
+`
+async function searchStudentDataSync(badgeNumber) {
+  const db_directory = getDatabaseLocation()
+  let db;
+  try {
+    db = await sqlite.open({
+      filename: db_directory,
+      driver: sqlite3.Database
+    });
+    const row = await db.get(searchStudentStmt, badgeNumber);
+    return row;
+  } catch (err) {
+    console.error('Error fetching row:', err);
+    throw err; // Re-throw the error for handling by the caller
+  } finally {
+    if (db) {
+      await db.close();
+    }
+  }
+}
 
 //---------------------------------------------------------------
 module.exports = {
   //createStudentsTable,
   updateStudentsData,
-  searchStudentsData
+  searchStudentsData,
+  searchStudentDataSync
 };
